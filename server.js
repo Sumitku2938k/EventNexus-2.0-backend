@@ -14,7 +14,7 @@ const path = require('path');
 
 //Handling cors policy issues
 const corsOptions = {
-    origin: "http://localhost:5173",
+    origin: "https://event-nexus-2-0-frontend.vercel.app/",
     methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
     credentials: true,
 };
@@ -28,6 +28,17 @@ app.use(express.json()); // Middleware to parse JSON bodies
 app.use(fileUpload({ // Enable file upload handling
   useTempFiles: true
 }));
+
+let isConnected = false; // Flag to track database connection status
+async function connectToDatabase() {
+  try {
+    await connectDB();
+    isConnected = true;
+    console.log('Connected to database');
+  } catch (error) {
+    console.error('Error connecting to database:', error);
+  }
+}
 
 // Render setup guide on root URL
 app.get('/', (req, res) => {
@@ -43,10 +54,13 @@ app.use('/api/admin', adminRouter); //Restful API for admin dashboard and manage
 app.use(errorMiddleware);
 
 // Start the server
-connectDB().then(() => { // Ensure DB is connected before starting server
-  app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-  });
-}).catch((err) => {
-  console.error('Failed to start server:', err);  
-});
+// connectDB().then(() => { // Ensure DB is connected before starting server
+//   app.listen(PORT, () => {
+//     console.log(`Server is running on http://localhost:${PORT}`);
+//   });
+// }).catch((err) => {
+//   console.error('Failed to start server:', err);  
+// });
+
+// Do not use app.listen in vercel
+module.exports = { app, connectToDatabase, isConnected };
