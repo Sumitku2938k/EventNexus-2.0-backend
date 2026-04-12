@@ -32,6 +32,7 @@ app.use(fileUpload({ // Enable file upload handling
 let isConnected = false; // Flag to track database connection status
 async function connectToDatabase() {
   try {
+    if (isConnected) return;
     await connectDB();
     isConnected = true;
     console.log('Connected to database');
@@ -39,6 +40,9 @@ async function connectToDatabase() {
     console.error('Error connecting to database:', error);
   }
 }
+
+// Ensure DB connection is initialized on startup/cold start.
+connectToDatabase();
 
 // Render setup guide on root URL
 app.get('/', (req, res) => {
@@ -63,4 +67,10 @@ app.use(errorMiddleware);
 // });
 
 // Do not use app.listen in vercel
-module.exports = { app, connectToDatabase, isConnected };
+module.exports = {
+  app,
+  connectToDatabase,
+  get isConnected() {
+    return isConnected;
+  },
+};
