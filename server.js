@@ -14,7 +14,7 @@ const path = require('path');
 
 //Handling cors policy issues
 const corsOptions = {
-    origin: "https://event-nexus-2-0-frontend.vercel.app/",
+    origin: "https://event-nexus-2-0-frontend.vercel.app",
     methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
     credentials: true,
 };
